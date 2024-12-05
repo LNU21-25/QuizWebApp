@@ -1,6 +1,7 @@
-import Question from '../components/Question.js';
+import Question from "../components/Question.js";
+import API from "../utils/api.js";
 
-export default function renderQuiz(container) {
+export default async function renderQuiz(container) {
   container.innerHTML = `
     <div class="background">
       <div class="center-box">
@@ -9,20 +10,20 @@ export default function renderQuiz(container) {
     </div>
   `;
 
-  const quizContent = document.getElementById('quiz-content');
+  const quizContent = document.getElementById("quiz-content");
 
-  // Example question data
-  const questionData = {
-    question: "What is the capital of France?",
-    alternatives: { a: "Paris", b: "London", c: "Berlin", d: "Madrid" },
-    correct_answer: "a",
-  };
+  try {
+    // Fetch the first question
+    const firstQuestion = await API.fetchQuestion();
 
-  // Handle answer submission
-  const handleAnswer = (isCorrect) => {
-    alert(isCorrect ? "Correct!" : "Incorrect. Try again!");
-  };
-
-  // Render the question component
-  Question.render(quizContent, questionData, handleAnswer);
+    // Render the first question
+    Question.render(quizContent, firstQuestion, (nextQuestion) => {
+      // Render the next question when the user submits an answer
+      Question.render(quizContent, nextQuestion, (subsequentQuestion) =>
+        Question.render(quizContent, subsequentQuestion)
+      );
+    });
+  } catch (error) {
+    quizContent.innerHTML = `<p>Error: ${error.message}</p>`;
+  }
 }
