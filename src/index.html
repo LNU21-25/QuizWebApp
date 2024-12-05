@@ -1,12 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiz Game</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Master</title>
+    <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-  <div id="app"></div>
-  <script type="module" src="/index.js"></script>
+    <div id="app">
+        <nav class="navbar">
+            <div class="logo">
+                <img src="/logo.png" alt="Quiz Master Logo">
+                <h1>Quiz Master</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" data-page="home">Home</a></li>
+                <li><a href="#" data-page="quiz">Quiz</a></li>
+                <li><a href="#" data-page="leaderboard">Leaderboard</a></li>
+            </ul>
+        </nav>
+        <main id="content">
+            <!-- Page content will be dynamically loaded here -->
+        </main>
+    </div>
+    <script type="module" src="index.js"></script>
 </body>
 </html>
