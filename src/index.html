@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quiz Game</title>
+  <script type="module" src="/app.js" defer></script>
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <div id="app"></div>
-  <script type="module" src="/index.js"></script>
+  <header>
+    <nav id="navbar">
+      <button data-page="home">Home</button>
+      <button data-page="quiz">Quiz</button>
+      <button data-page="leaderboard">Leaderboard</button>
+    </nav>
+  </header>
+  <main id="content"></main>
 </body>
 </html>
