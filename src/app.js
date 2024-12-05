@@ -19,13 +19,19 @@ const switchPage = (page) => {
   }
 };
 
+// Listen for navigation events
+window.addEventListener('navigate', (event) => {
+  switchPage(event.detail.page);
+});
+
 // Set up event listeners for navigation
 document.addEventListener('DOMContentLoaded', () => {
   const navbar = document.getElementById('navbar');
   navbar.addEventListener('click', (event) => {
     if (event.target.tagName === 'BUTTON') {
       const page = event.target.getAttribute('data-page');
-      switchPage(page);
+      const navigateEvent = new CustomEvent('navigate', { detail: { page } });
+      window.dispatchEvent(navigateEvent);
     }
   });
 
