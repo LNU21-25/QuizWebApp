@@ -21,6 +21,7 @@ const API = {
         this.currentURL = questionData.nextURL;
       }
 
+      console.log(`Question data:`, questionData);
       return questionData;
     } catch (error) {
       console.error(`Error during fetchQuestion: ${error.message}`);
@@ -52,6 +53,7 @@ const API = {
         this.currentURL = responseData.nextURL;
       }
 
+      console.log(`Response data:`, responseData);
       return responseData;
     } catch (error) {
       console.error(`Error during submitAnswer: ${error.message}`);

@@ -19,11 +19,14 @@ export default async function renderQuiz(container) {
       // Fetch the next question data from the API
       const questionData = await API.fetchQuestion();
       
-      // Create a new Question object
+      // Create a new Question object 
       currentQuestion = new Question(questionData);
 
       // Render the question's HTML in the container
       quizContent.innerHTML = currentQuestion.getHTML();
+
+      // Start the timer
+      currentQuestion.startTimer();
 
       // Set up answer submission
       setupAnswerSubmission();
@@ -40,7 +43,11 @@ export default async function renderQuiz(container) {
 
     // For open-answer questions
     if (submitBtn && answerInput) {
-      submitBtn.addEventListener("click", () => submitAnswer(answerInput.value));
+      submitBtn.addEventListener("click", () => {
+        // Stop the timer before submitting
+        currentQuestion.stopTimer();
+        submitAnswer(answerInput.value);
+      });
     }
 
     // For multiple-choice questions
@@ -48,10 +55,16 @@ export default async function renderQuiz(container) {
       multipleChoiceForm.addEventListener("submit", (e) => {
         e.preventDefault();
         const selectedRadio = document.querySelector('input[name="question-choice"]:checked');
+        
+        // Stop the timer before submitting
+        currentQuestion.stopTimer();
+        
         if (selectedRadio) {
           submitAnswer(selectedRadio.value);
         } else {
           alert("Please select an answer");
+          // Restart the timer if no answer selected
+          currentQuestion.startTimer();
         }
       });
     }

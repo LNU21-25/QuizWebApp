@@ -1,9 +1,13 @@
+import Timer from '../components/Timer.js';
+
 export default class Question {
   constructor(questionData) {
     this.id = questionData.id;
     this.questionText = questionData.question;
-    this.timeLimit = questionData.limit;
     this.message = questionData.message;
+    
+    // Create Timer instance with time limit
+    this.timer = new Timer(questionData.limit);
     
     // Handle optional alternatives for multiple-choice
     this.alternatives = questionData.alternatives || null;
@@ -22,6 +26,7 @@ export default class Question {
   getOpenAnswerHTML() {
     return `
       <div class="question-container">
+        ${this.timer.getHTML()}
         <h2 class="question-text">${this.questionText}</h2>
         <input 
           type="text" 
@@ -52,6 +57,7 @@ export default class Question {
 
     return `
       <div class="question-container">
+        ${this.timer.getHTML()}
         <h2 class="question-text">${this.questionText}</h2>
         <form class="choices-container" id="multiple-choice-form">
           ${choiceInputs}
@@ -59,5 +65,20 @@ export default class Question {
         </form>
       </div>
     `;
+  }
+
+  // Method to start the timer
+  startTimer() {
+    this.timer.start();
+  }
+
+  // Method to stop the timer
+  stopTimer() {
+    this.timer.stop();
+  }
+
+  // Method to get remaining time
+  getRemainingTime() {
+    return this.timer.getRemainingTime();
   }
 }
