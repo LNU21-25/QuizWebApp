@@ -1,6 +1,6 @@
 // Import your modules for each section
 import renderHome from './pages/Home.js';
-import renderQuiz from './pages/Quiz.js';
+import renderQuiz from '/pages/Quiz.js';
 import renderLeaderboard from './pages/LeaderBoard.js';
 
 // Map the pages to their render functions
