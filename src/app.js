@@ -11,13 +11,19 @@ const pages = {
 };
 
 // Function switch
-const switchPage = (page) => {
+const switchPage = (page, options = {}) => {
   const content = document.getElementById('content');
   content.innerHTML = ''; // Clear existing content
+
   if (pages[page]) {
-    pages[page](content); // Render new content into the main element
+    if (page === 'quiz') {
+      pages[page](content, options.nickname); // Pass nickname to renderQuiz
+    } else {
+      pages[page](content);
+    }
   }
 };
+
 
 // Listener
 window.addEventListener('navigate', (event) => {

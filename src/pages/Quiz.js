@@ -1,88 +1,100 @@
 import API from "../utils/api.js";
 import Question from "../components/Question.js";
+import { addHighScore } from "/pages/Leaderboard.js";
+import renderLeaderboard from "/pages/Leaderboard.js";
+import HighScore from "../components/HighScore.js";
 
-export default async function renderQuiz(container) {
-  // Set up the quiz container
+export default async function renderQuiz(container, nickname) {
+  let score = 0;
+
   container.innerHTML = `
     <div class="background">
       <div class="center-box">
         <div id="quiz-content"></div>
+        <div id="score-display">Score: 0</div>
       </div>
     </div>
   `;
 
   const quizContent = document.getElementById("quiz-content");
-  let currentQuestion = null;
+  const scoreDisplay = document.getElementById("score-display");
 
   async function loadNextQuestion() {
     try {
-      // Fetch the next question data from the API
       const questionData = await API.fetchQuestion();
-      
-      // Create a new Question object 
-      currentQuestion = new Question(questionData);
+      const currentQuestion = new Question(questionData);
 
-      // Render the question's HTML in the container
       quizContent.innerHTML = currentQuestion.getHTML();
-
-      // Start the timer
       currentQuestion.startTimer();
 
-      // Set up answer submission
-      setupAnswerSubmission();
+      setupAnswerSubmission(currentQuestion);
     } catch (error) {
       console.error("Error loading question:", error);
       quizContent.innerHTML = `<p>Error loading question. Please try again.</p>`;
     }
   }
 
-  function setupAnswerSubmission() {
+  function setupAnswerSubmission(currentQuestion) {
     const submitBtn = document.getElementById("submit-answer");
     const answerInput = document.getElementById("answer-input");
     const multipleChoiceForm = document.getElementById("multiple-choice-form");
 
-    // For open-answer questions
     if (submitBtn && answerInput) {
-      submitBtn.addEventListener("click", () => {
-        // Stop the timer before submitting
+      submitBtn.addEventListener("click", async () => {
         currentQuestion.stopTimer();
-        submitAnswer(answerInput.value);
+        await submitAnswer(currentQuestion, answerInput.value);
       });
     }
 
-    // For multiple-choice questions
     if (multipleChoiceForm) {
-      multipleChoiceForm.addEventListener("submit", (e) => {
+      multipleChoiceForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const selectedRadio = document.querySelector('input[name="question-choice"]:checked');
-        
-        // Stop the timer before submitting
         currentQuestion.stopTimer();
-        
+
         if (selectedRadio) {
-          submitAnswer(selectedRadio.value);
+          await submitAnswer(currentQuestion, selectedRadio.value);
         } else {
-          alert("Please select an answer");
-          // Restart the timer if no answer selected
+          alert("Please select an answer.");
           currentQuestion.startTimer();
         }
       });
     }
   }
 
-  async function submitAnswer(answer) {
+  async function submitAnswer(currentQuestion, answer) {
     try {
-      // Submit the answer using the current API URL
       const response = await API.submitAnswer(answer);
-      
-      // Check response and load next question or handle end of quiz
+
+      const timeLeft = currentQuestion.getRemainingTime();
+      score += timeLeft * 10;
+      scoreDisplay.textContent = `Score: ${score}`;
       await loadNextQuestion();
     } catch (error) {
       console.error("Error submitting answer:", error);
-      quizContent.innerHTML = `<p>Error submitting answer. Please try again.</p>`;
+      quizContent.innerHTML = `
+        <div class="failed-message">
+          <h2>Incorrect Answer</h2>
+          <p>"Better luck next time!"}</p>
+        </div>
+      `;
+
+      // Wait for 2 seconds before navigating to the leaderboard
+      setTimeout(() => {
+        finishQuiz();
+      }, 1000);
     }
   }
 
-  // Start the quiz by loading the first question
+  function finishQuiz() {
+    const currentTime = new Date();
+    const formattedTime = currentTime.toLocaleString(); // e.g., "12/23/2024, 3:45:12 PM"
+
+    addHighScore(new HighScore(nickname, score, formattedTime));
+    renderLeaderboard(container);
+  }
+
   await loadNextQuestion();
 }
+
+
