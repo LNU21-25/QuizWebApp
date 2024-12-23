@@ -6,8 +6,11 @@ export default class Question {
     this.questionText = questionData.question;
     this.message = questionData.message;
     
-    // Create Timer instance with time limit
-    this.timer = new Timer(questionData.limit);
+    // Use nullish coalescing operator (??) to fall back to 15 if limit is null or undefined
+    const timeLimit = questionData.limit ?? 15;
+
+    // Create Timer instance with the time limit (either from the API or default)
+    this.timer = new Timer(timeLimit);
     
     // Handle optional alternatives for multiple-choice
     this.alternatives = questionData.alternatives || null;

@@ -1,16 +1,16 @@
-// Import your modules for each section
-import renderHome from './pages/Home.js';
+// Import modules
+import renderHome from '/pages/Home.js';
 import renderQuiz from '/pages/Quiz.js';
 import renderLeaderboard from './pages/LeaderBoard.js';
 
-// Map the pages to their render functions
+// Map pages to render functions
 const pages = {
   home: renderHome,
   quiz: renderQuiz,
   leaderboard: renderLeaderboard,
 };
 
-// Function to switch the content
+// Function switch
 const switchPage = (page) => {
   const content = document.getElementById('content');
   content.innerHTML = ''; // Clear existing content
@@ -19,12 +19,12 @@ const switchPage = (page) => {
   }
 };
 
-// Listen for navigation events
+// Listener
 window.addEventListener('navigate', (event) => {
   switchPage(event.detail.page);
 });
 
-// Set up event listeners for navigation
+// Set up listeners for navigation
 document.addEventListener('DOMContentLoaded', () => {
   const navbar = document.getElementById('navbar');
   navbar.addEventListener('click', (event) => {

@@ -47,13 +47,13 @@ const API = {
       }
 
       const responseData = await response.json();
+      console.log(`Response data:`, responseData);
       
       // Update the current URL for the next question
       if (responseData.nextURL) {
         this.currentURL = responseData.nextURL;
       }
 
-      console.log(`Response data:`, responseData);
       return responseData;
     } catch (error) {
       console.error(`Error during submitAnswer: ${error.message}`);
