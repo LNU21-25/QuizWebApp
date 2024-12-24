@@ -27,7 +27,7 @@ const switchPage = (page, options = {}) => {
 
 // Listener
 window.addEventListener('navigate', (event) => {
-  switchPage(event.detail.page);
+  switchPage(event.detail.page, event.detail);
 });
 
 // Set up listeners for navigation

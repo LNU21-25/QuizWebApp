@@ -3,6 +3,11 @@ const API_BASE_URL = "https://courselab.lnu.se/quiz/question/1";
 const API = {
   currentURL: API_BASE_URL,
 
+  resetQuiz() {
+    this.currentURL = API_BASE_URL;
+    return Promise.resolve();
+  },
+
   async fetchQuestion() {
     console.log(`Fetching question from API...`);
     console.log(`Request URL: ${this.currentURL}`);
@@ -16,7 +21,6 @@ const API = {
 
       const questionData = await response.json();
       
-      // Update the current URL for the next question submission
       if (questionData.nextURL) {
         this.currentURL = questionData.nextURL;
       }
@@ -49,7 +53,6 @@ const API = {
       const responseData = await response.json();
       console.log(`Response data:`, responseData);
       
-      // Update the current URL for the next question
       if (responseData.nextURL) {
         this.currentURL = responseData.nextURL;
       }

@@ -21,9 +21,13 @@ export default function renderLeaderboard(container) {
   `;
 
   document.getElementById('restart-quiz').addEventListener('click', async () => {
-    const event = new CustomEvent('navigate', { detail: { page: 'home' } });
-    api.nextURL = API_BASE_URL;
-    window.dispatchEvent(event);
+    try {
+      await api.resetQuiz(); // Add this method to your API class
+      const event = new CustomEvent('navigate', { detail: { page: 'home' } });
+      window.dispatchEvent(event);
+    } catch (error) {
+      console.error('Failed to reset quiz:', error);
+    }
   });
 }
 

@@ -6,6 +6,7 @@ import HighScore from "../components/HighScore.js";
 
 export default async function renderQuiz(container, nickname) {
   let score = 0;
+  let currentNickname = nickname;
 
   container.innerHTML = `
     <div class="background">
@@ -90,7 +91,7 @@ export default async function renderQuiz(container, nickname) {
     const currentTime = new Date();
     const formattedTime = currentTime.toLocaleString(); // e.g., "12/23/2024, 3:45:12 PM"
 
-    addHighScore(new HighScore(nickname, score, formattedTime));
+    addHighScore(new HighScore(currentNickname, score, formattedTime));
     renderLeaderboard(container);
   }
 

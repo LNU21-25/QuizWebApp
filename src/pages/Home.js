@@ -12,7 +12,6 @@ export default function renderHome(container) {
 
   document.getElementById('start-quiz').addEventListener('click', () => {
     const nickname = document.getElementById('nickname').value.trim();
-
     if (!nickname) {
       alert('Please enter a nickname to start!');
       return;
