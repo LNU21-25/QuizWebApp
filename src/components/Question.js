@@ -1,18 +1,13 @@
 import Timer from '../components/Timer.js';
 
 export default class Question {
-  constructor(questionData) {
+  constructor(questionData, onTimerExpire) {
     this.id = questionData.id;
     this.questionText = questionData.question;
     this.message = questionData.message;
-    
-    // Use nullish coalescing operator (??) to fall back to 15 if limit is null or undefined
+    this.onTimerExpire = onTimerExpire;
     const timeLimit = questionData.limit ?? 15;
-
-    // Create Timer instance with the time limit (either from the API or default)
     this.timer = new Timer(timeLimit);
-    
-    // Handle optional alternatives for multiple-choice
     this.alternatives = questionData.alternatives || null;
   }
 
@@ -73,6 +68,14 @@ export default class Question {
   // Method to start the timer
   startTimer() {
     this.timer.start();
+    const checkTimer = setInterval(() => {
+      if (this.timer.getRemainingTime() <= 0) {
+        clearInterval(checkTimer);
+        if (this.onTimerExpire) {
+          this.onTimerExpire();
+        }
+      }
+    }, 1000);
   }
 
   // Method to stop the timer

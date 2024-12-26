@@ -7,6 +7,7 @@ import HighScore from "../components/HighScore.js";
 export default async function renderQuiz(container, nickname) {
   let score = 0;
   let currentNickname = nickname;
+  let currentQuestion = null;
 
   container.innerHTML = `
     <div class="background">
@@ -23,11 +24,12 @@ export default async function renderQuiz(container, nickname) {
   async function loadNextQuestion() {
     try {
       const questionData = await API.fetchQuestion();
-      const currentQuestion = new Question(questionData);
+      currentQuestion = new Question(questionData, () => {
+        finishQuiz();
+      });
 
       quizContent.innerHTML = currentQuestion.getHTML();
       currentQuestion.startTimer();
-
       setupAnswerSubmission(currentQuestion);
     } catch (error) {
       console.error("Error loading question:", error);
@@ -88,9 +90,12 @@ export default async function renderQuiz(container, nickname) {
   }
 
   function finishQuiz() {
+    if (currentQuestion) {
+      currentQuestion.stopTimer();
+    }
+    
     const currentTime = new Date();
-    const formattedTime = currentTime.toLocaleString(); // e.g., "12/23/2024, 3:45:12 PM"
-
+    const formattedTime = currentTime.toLocaleString();
     addHighScore(new HighScore(currentNickname, score, formattedTime));
     renderLeaderboard(container);
   }
