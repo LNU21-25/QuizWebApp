@@ -1,27 +1,27 @@
-import Timer from '../components/Timer.js';
+import Timer from '../components/Timer.js'
 
 export default class Question {
-  constructor(questionData, onTimerExpire) {
-    this.id = questionData.id;
-    this.questionText = questionData.question;
-    this.message = questionData.message;
-    this.onTimerExpire = onTimerExpire;
-    const timeLimit = questionData.limit ?? 15;
-    this.timer = new Timer(timeLimit);
-    this.alternatives = questionData.alternatives || null;
+  constructor (questionData, onTimerExpire) {
+    this.id = questionData.id
+    this.questionText = questionData.question
+    this.message = questionData.message
+    this.onTimerExpire = onTimerExpire
+    const timeLimit = questionData.limit ?? 15
+    this.timer = new Timer(timeLimit)
+    this.alternatives = questionData.alternatives || null
   }
 
-  getHTML() {
+  getHTML () {
     // Check if alternatives exist (multiple-choice)
     if (this.alternatives) {
-      return this.getMultipleChoiceHTML();
+      return this.getMultipleChoiceHTML()
     }
-    
+
     // Default to open-answer question
-    return this.getOpenAnswerHTML();
+    return this.getOpenAnswerHTML()
   }
 
-  getOpenAnswerHTML() {
+  getOpenAnswerHTML () {
     return `
       <div class="question-container">
         ${this.timer.getHTML()}
@@ -34,10 +34,10 @@ export default class Question {
         >
         <button id="submit-answer" class="submit-btn">Submit Answer</button>
       </div>
-    `;
+    `
   }
 
-  getMultipleChoiceHTML() {
+  getMultipleChoiceHTML () {
     // Generate radio buttons from alternatives
     const choiceInputs = Object.entries(this.alternatives)
       .map(([key, value]) => `
@@ -51,7 +51,7 @@ export default class Question {
           >
           <label for="choice-${key}">${value}</label>
         </div>
-      `).join('');
+      `).join('')
 
     return `
       <div class="question-container">
@@ -62,29 +62,29 @@ export default class Question {
           <button type="submit" id="submit-answer" class="submit-btn">Submit Answer</button>
         </form>
       </div>
-    `;
+    `
   }
 
   // Method to start the timer
-  startTimer() {
-    this.timer.start();
+  startTimer () {
+    this.timer.start()
     const checkTimer = setInterval(() => {
       if (this.timer.getRemainingTime() <= 0) {
-        clearInterval(checkTimer);
+        clearInterval(checkTimer)
         if (this.onTimerExpire) {
-          this.onTimerExpire();
+          this.onTimerExpire()
         }
       }
-    }, 1000);
+    }, 1000)
   }
 
   // Method to stop the timer
-  stopTimer() {
-    this.timer.stop();
+  stopTimer () {
+    this.timer.stop()
   }
 
   // Method to get remaining time
-  getRemainingTime() {
-    return this.timer.getRemainingTime();
+  getRemainingTime () {
+    return this.timer.getRemainingTime()
   }
 }

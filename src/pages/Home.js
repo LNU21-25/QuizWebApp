@@ -1,4 +1,8 @@
-export default function renderHome(container) {
+/**
+ * renders the home page
+ * @param {HTMLElement} container html
+ */
+export default function renderHome (container) {
   container.innerHTML = `
     <div class="background">
       <div class="center-box">
@@ -8,19 +12,19 @@ export default function renderHome(container) {
         <button id="start-quiz">Start Quiz</button>
       </div>
     </div>
-  `;
+  `
 
   document.getElementById('start-quiz').addEventListener('click', () => {
-    const nickname = document.getElementById('nickname').value.trim();
+    const nickname = document.getElementById('nickname').value.trim()
     if (!nickname) {
-      alert('Please enter a nickname to start!');
-      return;
+      alert('Please enter a nickname to start!')
+      return
     }
 
     // Navigate to the quiz page with the nickname
     const event = new CustomEvent('navigate', {
-      detail: { page: 'quiz', nickname },
-    });
-    window.dispatchEvent(event);
-  });
+      detail: { page: 'quiz', nickname }
+    })
+    window.dispatchEvent(event)
+  })
 }

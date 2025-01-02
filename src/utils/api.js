@@ -1,68 +1,66 @@
-const API_BASE_URL = "https://courselab.lnu.se/quiz/question/1";
+const API_BASE_URL = 'https://courselab.lnu.se/quiz/question/1'
 
 const API = {
   currentURL: API_BASE_URL,
 
-  resetQuiz() {
-    this.currentURL = API_BASE_URL;
-    return Promise.resolve();
+  resetQuiz () {
+    this.currentURL = API_BASE_URL
+    return Promise.resolve()
   },
 
-  async fetchQuestion() {
-    console.log(`Fetching question from API...`);
-    console.log(`Request URL: ${this.currentURL}`);
+  async fetchQuestion () {
+    console.log('Fetching question from API...')
+    console.log('Request URL: ' + this.currentURL)
 
     try {
-      const response = await fetch(this.currentURL);
+      const response = await fetch(this.currentURL)
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch question: ${response.statusText}`);
+        throw new Error('Failed to fetch question: ' + response.statusText)
       }
 
-      const questionData = await response.json();
-      
+      const questionData = await response.json()
       if (questionData.nextURL) {
-        this.currentURL = questionData.nextURL;
+        this.currentURL = questionData.nextURL
       }
 
-      console.log(`Question data:`, questionData);
-      return questionData;
+      console.log('Question data:', questionData)
+      return questionData
     } catch (error) {
-      console.error(`Error during fetchQuestion: ${error.message}`);
-      throw error;
+      console.error('Error during fetchQuestion: ' + error.message)
+      throw error
     }
   },
 
-  async submitAnswer(answer) {
-    console.log(`Submitting answer to API...`);
-    console.log(`Request URL: ${this.currentURL}`);
+  async submitAnswer (answer) {
+    console.log('Submitting answer to API...')
+    console.log('Request URL: ' + this.currentURL)
 
     try {
       const response = await fetch(this.currentURL, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ answer }),
-      });
+        body: JSON.stringify({ answer })
+      })
 
       if (!response.ok) {
-        throw new Error(`Failed to submit answer: ${response.statusText}`);
+        throw new Error('Failed to submit answer: ' + response.statusText)
       }
 
-      const responseData = await response.json();
-      console.log(`Response data:`, responseData);
-      
+      const responseData = await response.json()
+      console.log('Response data:', responseData)
       if (responseData.nextURL) {
-        this.currentURL = responseData.nextURL;
+        this.currentURL = responseData.nextURL
       }
 
-      return responseData;
+      return responseData
     } catch (error) {
-      console.error(`Error during submitAnswer: ${error.message}`);
-      throw error;
+      console.error('Error during submitAnswer: ' + error.message)
+      throw error
     }
-  },
-};
+  }
+}
 
-export default API;
+export default API

@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   root: './src', // Ensures Vite looks for `src/index.html`
@@ -9,4 +9,4 @@ export default defineConfig({
   server: {
     open: true // Automatically open the app in the browser
   }
-});
+})
