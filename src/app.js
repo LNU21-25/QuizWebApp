@@ -1,6 +1,6 @@
 // Import modules
-import renderHome from 'pages/Home.js'
-import renderQuiz from 'pages/Quiz.js'
+import renderHome from '/pages/Home.js'
+import renderQuiz from '/pages/Quiz.js'
 import renderLeaderboard from './pages/LeaderBoard.js'
 
 // Map pages to render functions
