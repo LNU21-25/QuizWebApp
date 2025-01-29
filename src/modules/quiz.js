@@ -1,4 +1,5 @@
-import { API } from './utils/api.js'
+import { API } from '../utils/api.js'
+import { saveHighScore } from './scores.js'
 
 /**
  * Initializes the quiz section UI.
@@ -13,6 +14,13 @@ export function initializeQuiz () {
     <div id="question-container"></div>
     <p id="timer"></p>
   `
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      const submitButton = document.getElementById('submit-answer')
+      if (submitButton) submitButton.click()
+    }
+  })
 }
 
 /**
@@ -28,9 +36,13 @@ export function startQuiz (nickname) {
 
   let currentQuestion = null
   let timer = null
+  let score = 0 // Initialize score
+
+  console.log('Attempting to load first question...')
+  loadQuestion()
 
   /**
-   * Loads the next question from the API.
+   *
    */
   async function loadQuestion () {
     try {
@@ -38,7 +50,6 @@ export function startQuiz (nickname) {
       questionContainer.innerHTML = ''
       questionContainer.appendChild(currentQuestion.renderHTML())
 
-      // Add event listener to submit button
       const submitButton = document.getElementById('submit-answer')
       if (submitButton) {
         submitButton.addEventListener('click', submitAnswer)
@@ -47,35 +58,44 @@ export function startQuiz (nickname) {
       startTimer(currentQuestion.limit)
     } catch (error) {
       console.error('Error loading question:', error)
-      questionContainer.textContent = 'Failed to load the question. Please try again later.'
+      questionContainer.textContent =
+        'Failed to load the question. Please try again later.'
     }
   }
 
   /**
-   * Starts the timer for the current question.
-   * @param {number} limit - Time limit in seconds.
+   *
+   * @param limit
    */
   function startTimer (limit) {
-    console.log(`Starting timer with ${limit} seconds.`)
+    if (timer) clearInterval(timer)
     let timeRemaining = limit
-
     timerElement.textContent = `Time remaining: ${timeRemaining}s`
+
     timer = setInterval(() => {
       timeRemaining--
       timerElement.textContent = `Time remaining: ${timeRemaining}s`
+
       if (timeRemaining <= 0) {
         clearInterval(timer)
         console.log('Time is up!')
-        endGame('Time is up!')
+        endGame(false)
       }
     }, 1000)
   }
 
   /**
-   * Submits the user's answer to the API.
+   *
    */
   async function submitAnswer () {
-    const answer = document.querySelector('input[name="answer"]:checked')?.value || document.getElementById('answer')?.value
+    const selectedOption = document.querySelector('input[name="answer"]:checked')
+    const textAnswer = document.getElementById('answer')
+
+    const answer = selectedOption
+      ? selectedOption.value
+      : textAnswer
+        ? textAnswer.value.trim()
+        : null
 
     if (!answer) {
       alert('Please provide an answer.')
@@ -84,34 +104,60 @@ export function startQuiz (nickname) {
     }
 
     console.log('Submitting answer:', answer)
-
     clearInterval(timer)
+
     try {
       const data = await api.submitAnswer(answer, currentQuestion.nextURL)
+      const timeRemaining = parseInt(timerElement.textContent.split(' ')[2].slice(0, -1))
+
       if (data.nextURL) {
+        // Correct answer: Update score
+        score += timeRemaining * 10
+        console.log(`Correct! Score updated: ${score}`)
+
         api.currentURL = data.nextURL
         loadQuestion()
       } else {
-        endGame('Congratulations, you completed the quiz!')
+        endGame(true)
       }
     } catch (error) {
       console.error('Error submitting answer:', error)
-      endGame('An error occurred while submitting your answer.')
+      endGame(false)
     }
   }
 
   /**
-   * Ends the game with a given message.
-   * @param {string} message - The message to display at the end of the game.
+   *
+   * @param success
    */
-  function endGame (message) {
-    questionContainer.textContent = message
-    const restartButton = document.createElement('button')
-    restartButton.textContent = 'Restart Quiz'
-    restartButton.addEventListener('click', () => location.reload())
-    questionContainer.appendChild(restartButton)
-    console.log('Game over:', message)
+  function endGame (success) {
+    clearInterval(timer)
+    const quizContainer = document.getElementById('quiz')
+
+    const messageFail = '❌ Incorrect answer. Game over!'
+    const messageSuc = '🎉 Congratulations! You completed the quiz!'
+
+    quizContainer.innerHTML = `
+      <h2>Your score: ${score}</h2>
+      <h1 id="game-over">${success ? messageSuc : messageFail}</h1>
+      <button id="restart-button">Try Again</button>
+    `
+
+    // Save score on failure as well
+    saveHighScore(nickname, score)
+
+    // Attach restart event listener
+    document.getElementById('restart-button').addEventListener('click', restartGame)
   }
 
-  loadQuestion()
+  /**
+   *
+   */
+  function restartGame () {
+    console.log('Restarting game...')
+    const quizDiv = document.getElementById('quiz')
+    quizDiv.innerHTML = '' // Clear content
+    initializeQuiz() // Re-initialize UI
+    startQuiz(nickname) // Restart quiz with the same nickname
+  }
 }

@@ -1,4 +1,4 @@
-import { Question } from './objects/question.js'
+import { Question } from '../objects/question.js'
 
 export class API {
   static baseURL = 'https://courselab.lnu.se/quiz/question/1'

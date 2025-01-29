@@ -19,17 +19,17 @@ export class Question {
             <label>
               <input type="radio" name="answer" value="${key}">
               ${value}
-            </label>
-          `
+            </label><br>`
       }
       container.appendChild(options)
     } else {
-      const input = document.createElement('input')
-      input.type = 'text'
-      input.id = 'answer'
-      input.placeholder = 'Type your answer'
-      container.appendChild(input)
+      container.innerHTML += '<input type="text" id="answer">'
     }
+
+    const submitButton = document.createElement('button')
+    submitButton.id = 'submit-answer'
+    submitButton.textContent = 'Submit Answer'
+    container.appendChild(submitButton)
 
     return container
   }
