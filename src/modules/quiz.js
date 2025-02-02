@@ -42,7 +42,7 @@ export function startQuiz (nickname) {
   loadQuestion()
 
   /**
-   *
+   * loads in the next question
    */
   async function loadQuestion () {
     try {
@@ -64,8 +64,8 @@ export function startQuiz (nickname) {
   }
 
   /**
-   *
-   * @param limit
+   * starts the timer for the quiz
+   * @param {number} limit - The time limit for the quiz question in seconds.
    */
   function startTimer (limit) {
     if (timer) clearInterval(timer)
@@ -85,7 +85,7 @@ export function startQuiz (nickname) {
   }
 
   /**
-   *
+   * submits the answer to the question
    */
   async function submitAnswer () {
     const selectedOption = document.querySelector('input[name="answer"]:checked')
@@ -127,8 +127,8 @@ export function startQuiz (nickname) {
   }
 
   /**
-   *
-   * @param success
+   * ends the game
+   * @param success boolean - whether the game was successful
    */
   function endGame (success) {
     clearInterval(timer)
@@ -151,7 +151,7 @@ export function startQuiz (nickname) {
   }
 
   /**
-   *
+   * restarts the game
    */
   function restartGame () {
     console.log('Restarting game...')

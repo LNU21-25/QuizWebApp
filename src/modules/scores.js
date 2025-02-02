@@ -1,5 +1,5 @@
 /**
- *
+ * Initializes the scores section of the
  */
 export function initializeScores () {
   console.log('Initializing scores section...')
@@ -24,10 +24,9 @@ export function initializeScores () {
 }
 
 /**
- *
- * @param nickname
- * @param time
- * @param score
+ * Saves the high score to local storage.
+ * @param {string} nickname The player's nickname.
+ * @param {number} score The player's score.
  */
 export function saveHighScore (nickname, score) {
   let highScores = JSON.parse(localStorage.getItem('highScores')) || []
@@ -43,7 +42,7 @@ export function saveHighScore (nickname, score) {
 }
 
 /**
- *
+ * Updates the leaderboard with the current high scores.
  */
 export function updateLeaderboard () {
   const highScores = JSON.parse(localStorage.getItem('highScores')) || []

@@ -4,6 +4,7 @@ import { initializeScores, updateLeaderboard } from './modules/scores.js'
 
 console.log('Initializing app...')
 
+// Wait for the DOM to fully load before initializing the app
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM fully loaded.')
 

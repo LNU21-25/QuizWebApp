@@ -1,3 +1,13 @@
+/**
+ * Represents a question object
+ * @typedef {object} QuestionData
+ * @property {number} id - The ID of the question
+ * @property {string} question - The text of the question
+ * @property {number} [limit=15] - The time limit for the question
+ * @property {string} nextURL - The URL for the next question
+ * @property {object|null} [alternatives=null] - The alternatives for the question
+ * @property {string} message - The message for the question
+ */
 export class Question {
   constructor (data) {
     this.id = data.id
@@ -8,6 +18,10 @@ export class Question {
     this.message = data.message
   }
 
+  /**
+   * Renders the question HTML
+   * @returns {HTMLDivElement} The question container
+   */
   renderHTML () {
     const container = document.createElement('div')
     container.innerHTML = `<p>${this.questionText}</p>`

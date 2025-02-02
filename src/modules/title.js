@@ -1,7 +1,7 @@
 import { startQuiz } from './quiz.js'
 
 /**
- *
+ * Initializes the title section UI.
  */
 export function initializeTitle () {
   console.log('Initializing title section...')
