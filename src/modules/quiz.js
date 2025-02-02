@@ -128,7 +128,7 @@ export function startQuiz (nickname) {
 
   /**
    * ends the game
-   * @param success boolean - whether the game was successful
+   * @param {boolean} success - whether the game was successful
    */
   function endGame (success) {
     clearInterval(timer)
