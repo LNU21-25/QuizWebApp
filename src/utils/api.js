@@ -1,66 +1,53 @@
-const API_BASE_URL = 'https://courselab.lnu.se/quiz/question/1'
+import { Question } from '../objects/question.js'
 
-const API = {
-  currentURL: API_BASE_URL,
+/**
+ * Represents the API for fetching quiz questions and submitting answers.
+ */
+export class API {
+  static baseURL = 'https://courselab.lnu.se/quiz/question/1'
+  constructor () {
+    this.currentURL = API.baseURL
+  }
 
-  resetQuiz () {
-    this.currentURL = API_BASE_URL
-    return Promise.resolve()
-  },
-
+  /**
+   * Fetches the question data from the current URL.
+   * @returns {Promise<Question>} The fetched question object
+   */
   async fetchQuestion () {
-    console.log('Fetching question from API...')
-    console.log('Request URL: ' + this.currentURL)
-
     try {
       const response = await fetch(this.currentURL)
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch question: ' + response.statusText)
-      }
-
-      const questionData = await response.json()
-      if (questionData.nextURL) {
-        this.currentURL = questionData.nextURL
-      }
-
-      console.log('Question data:', questionData)
-      return questionData
+      const data = await response.json()
+      console.log('Fetched question:', data)
+      return this.buildQuestionObject(data)
     } catch (error) {
-      console.error('Error during fetchQuestion: ' + error.message)
-      throw error
-    }
-  },
-
-  async submitAnswer (answer) {
-    console.log('Submitting answer to API...')
-    console.log('Request URL: ' + this.currentURL)
-
-    try {
-      const response = await fetch(this.currentURL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ answer })
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to submit answer: ' + response.statusText)
-      }
-
-      const responseData = await response.json()
-      console.log('Response data:', responseData)
-      if (responseData.nextURL) {
-        this.currentURL = responseData.nextURL
-      }
-
-      return responseData
-    } catch (error) {
-      console.error('Error during submitAnswer: ' + error.message)
-      throw error
+      console.error('Error fetching question:', error)
+      throw new Error('Failed to fetch question.')
     }
   }
-}
 
-export default API
+  /**
+   * Submits the answer to the current question.
+   * @param {string} answer The answer to submit
+   * @param {string} nextURL The URL for the next question
+   * @returns {Promise<object>} The response data
+   */
+  async submitAnswer (answer, nextURL) {
+    try {
+      const response = await fetch(nextURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answer })
+      })
+      const data = await response.json()
+      console.log('Answer submitted, response:', data)
+      return data
+    } catch (error) {
+      console.error('Error submitting answer:', error)
+      throw new Error('Failed to submit answer.')
+    }
+  }
+
+  buildQuestionObject (data) {
+    return new Question(data)
+  }
+}
